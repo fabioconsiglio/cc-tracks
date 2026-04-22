@@ -7,8 +7,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
   <script src="main.js" defer></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+  <script src="https://unpkg.com/leaflet-gpx@1.7.0/gpx.js" defer></script>
+  <script src="map.js" defer></script>
 </head>
 <body>
 
@@ -19,6 +23,7 @@
       <div class="brand">Rides <span>&amp;</span> Routes</div>
       <nav>
         <a href="#routes">Routes</a>
+        <a href="#map-section">Map</a>
         <a href="#about">About</a>
         <a href="https://github.com/fabioconsiglio" target="_blank" rel="noopener">GitHub</a>
       </nav>
@@ -139,6 +144,13 @@
 
     <div class="no-results">No routes match — try a different search or filter.</div>
   </div>
+
+  <div id="map-section" class="section-head">
+    <h2>On the Map</h2>
+    <div class="count">33 tracks · 3 regions</div>
+  </div>
+
+  <div id="route-map" class="route-map is-loading" role="img" aria-label="Map of all cycling routes"></div>
 
   <footer id="about">
     <div>© 2026 · Ride in good weather, and in bad.</div>
