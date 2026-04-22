@@ -24,7 +24,7 @@
 
     cards.forEach(function (card) { card.hidden = true; });
 
-    var limit = collapsed ? Math.min(5, matching.length) : matching.length;
+    var limit = collapsed ? Math.min(6, matching.length) : matching.length;
     for (var i = 0; i < limit; i++) {
       matching[i].hidden = false;
     }

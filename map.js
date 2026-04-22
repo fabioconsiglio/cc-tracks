@@ -6,14 +6,17 @@
 
   var COLORS = {
     allgau:  '#4a5d3a',
-    toscana: '#b84a28',
+    toscana: '#039e1d',
     japan:   '#2a6e9e',
+    norway: '#03609e'
   };
 
   var SELECTED_COLORS = {
-    allgau:  '#6b8f54',
-    toscana: '#e05e30',
-    japan:   '#3a9ed8',
+    allgau:  '#77ae4a',
+    toscana: '#039e1d',
+    japan:   '#2488d0',
+    norway: '#068ce5'
+
   };
 
   var infoPanel  = document.getElementById('route-info');

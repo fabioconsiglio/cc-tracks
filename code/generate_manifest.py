@@ -18,7 +18,10 @@ NS = {"gpx": "http://www.topografix.com/GPX/1/1"}
 REGION_MAP = [
     (re.compile(r"allg", re.I), "allgau", "Allgäu"),
     (re.compile(r"toscana|toskana", re.I), "toscana", "Toscana"),
-    (re.compile(r"international|japan", re.I), "japan", "Japan"),
+    (re.compile(r"japan", re.I), "japan", "Japan"),
+    (re.compile(r"norway", re.I), "norway", "Norway"),
+
+
 ]
 
 
