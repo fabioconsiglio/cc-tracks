@@ -4,19 +4,17 @@
   var mapEl = document.getElementById('route-map');
   if (!mapEl) return;
 
-  var COLORS = {
-    allgau:  '#4a5d3a',
-    toscana: '#039e1d',
-    japan:   '#2a6e9e',
-    norway:  '#03609e'
-  };
-
-  var SELECTED_COLORS = {
-    allgau:  '#77ae4a',
-    toscana: '#039e1d',
-    japan:   '#2488d0',
-    norway:  '#068ce5'
-  };
+  function routeColors(path) {
+    var hash = 0;
+    for (var i = 0; i < path.length; i++) {
+      hash = (hash * 31 + path.charCodeAt(i)) & 0xffffffff;
+    }
+    var hue = Math.abs(hash) % 360;
+    return {
+      base:     'hsl(' + hue + ', 60%, 38%)',
+      selected: 'hsl(' + hue + ', 80%, 55%)',
+    };
+  }
 
   var infoPanel  = document.getElementById('route-info');
   var infoName   = document.getElementById('route-info-name');
@@ -47,8 +45,7 @@
 
   function deselect() {
     if (!selectedLayer) return;
-    var r = selectedLayer._routeMeta.region;
-    selectedLayer.setStyle({ color: COLORS[r], weight: 2.5, opacity: 0.85 });
+    selectedLayer.setStyle({ color: selectedLayer._colors.base, weight: 2.5, opacity: 0.85 });
     selectedLayer = null;
     hidePanel();
   }
@@ -58,8 +55,7 @@
     if (selectedLayer === layer) { deselect(); return; }
     deselect();
     selectedLayer = layer;
-    var r = layer._routeMeta.region;
-    layer.setStyle({ color: SELECTED_COLORS[r] || '#fff', weight: 4.5, opacity: 1 });
+    layer.setStyle({ color: layer._colors.selected, weight: 4.5, opacity: 1 });
     showPanel(layer._routeMeta);
   }
 
@@ -96,13 +92,15 @@
     routes.forEach(function (meta) {
       if (!meta.polyline || meta.polyline.length === 0) return;
 
+      var colors = routeColors(meta.path);
       var layer = L.polyline(meta.polyline, {
-        color:   COLORS[meta.region] || '#888',
+        color:   colors.base,
         weight:  2.5,
         opacity: 0.85,
       });
 
       layer._routeMeta = meta;
+      layer._colors = colors;
       layerMap[meta.path] = layer;
 
       layer.on('click', function (e) {
