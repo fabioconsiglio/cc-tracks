@@ -6,30 +6,46 @@
   var routesGrid  = document.querySelector('.routes');
   var countEl     = document.getElementById('route-count');
   var noResults   = document.querySelector('.no-results');
+  var mapSection  = document.getElementById('map-section');
 
   var activeFilter = 'all';
-  var cards = [];
+  var collapsed    = true;
+  var cards        = [];
+  var showMoreBtn  = null;
 
   function apply() {
     var q = searchInput.value.trim().toLowerCase();
-    var visible = 0;
 
-    cards.forEach(function (card) {
+    var matching = cards.filter(function (card) {
       var regionMatch = activeFilter === 'all' || card.dataset.region === activeFilter;
       var searchMatch = !q || card.textContent.toLowerCase().includes(q);
-      card.hidden = !(regionMatch && searchMatch);
-      if (!card.hidden) visible++;
+      return regionMatch && searchMatch;
     });
 
-    noResults.style.display = visible === 0 ? 'block' : 'none';
+    cards.forEach(function (card) { card.hidden = true; });
+
+    var limit = collapsed ? Math.min(5, matching.length) : matching.length;
+    for (var i = 0; i < limit; i++) {
+      matching[i].hidden = false;
+    }
+
+    var remaining = matching.length - 5;
+    var btnVisible = collapsed && remaining > 0;
+
+    if (showMoreBtn) {
+      showMoreBtn.hidden = !btnVisible;
+      if (btnVisible) showMoreBtn.textContent = 'Show all ' + matching.length + ' routes';
+    }
+
+    routesGrid.style.marginBottom = btnVisible ? '0' : '4rem';
+    noResults.style.display = matching.length === 0 ? 'block' : 'none';
   }
 
   function buildCard(route, index) {
     var a = document.createElement('a');
     a.className = 'route';
     a.dataset.region = route.region;
-    a.href = route.path;
-    a.setAttribute('download', '');
+    a.href = '#map-section';
 
     var num = String(index + 1).padStart(2, '0');
 
@@ -45,10 +61,15 @@
       '</div>' +
       '<div class="route-footer">' +
         '<span class="surface">' + route.region_label + '</span>' +
-        '<span class="download">↓ GPX</span>' +
+        '<span class="download">→ Map</span>' +
       '</div>';
 
-    // Lock entrance animation after it plays
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      document.dispatchEvent(new CustomEvent('route:preview', { detail: { path: route.path } }));
+      if (mapSection) mapSection.scrollIntoView({ behavior: 'smooth' });
+    });
+
     a.addEventListener('animationend', function () {
       a.style.animation = 'none';
       a.style.opacity = '1';
@@ -77,8 +98,17 @@
         cards.push(card);
       });
 
+      showMoreBtn = document.createElement('button');
+      showMoreBtn.className = 'show-more-btn';
+      showMoreBtn.addEventListener('click', function () {
+        collapsed = false;
+        apply();
+      });
+      routesGrid.parentNode.insertBefore(showMoreBtn, routesGrid.nextSibling);
+
       if (countEl) {
-        countEl.textContent = data.routes.length + ' routes · Updated ' + new Date(data.generated).toLocaleDateString('en', { month: 'long', year: 'numeric' });
+        countEl.textContent = data.routes.length + ' routes · Updated ' +
+          new Date(data.generated).toLocaleDateString('en', { month: 'long', year: 'numeric' });
       }
 
       apply();

@@ -16,13 +16,18 @@
     japan:   '#3a9ed8',
   };
 
-  var infoPanel   = document.getElementById('route-info');
-  var infoName    = document.getElementById('route-info-name');
-  var infoRegion  = document.getElementById('route-info-region');
-  var infoDist    = document.getElementById('route-info-distance');
-  var infoEle     = document.getElementById('route-info-elevation');
-  var infoLink    = document.getElementById('route-info-download');
-  var infoClose   = document.getElementById('route-info-close');
+  var infoPanel  = document.getElementById('route-info');
+  var infoName   = document.getElementById('route-info-name');
+  var infoRegion = document.getElementById('route-info-region');
+  var infoDist   = document.getElementById('route-info-distance');
+  var infoEle    = document.getElementById('route-info-elevation');
+  var infoLink   = document.getElementById('route-info-download');
+  var infoClose  = document.getElementById('route-info-close');
+
+  var mapBooted     = false;
+  var layerMap      = {};   // path → gpxLayer, populated as each GPX loads
+  var pendingPath   = null; // path requested before layer was ready
+  var selectedLayer = null;
 
   function showPanel(meta) {
     infoName.textContent   = meta.name;
@@ -38,6 +43,40 @@
     infoPanel.hidden = true;
   }
 
+  function deselect() {
+    if (!selectedLayer) return;
+    var r = selectedLayer._routeMeta.region;
+    selectedLayer.setStyle({ color: COLORS[r], weight: 2.5, opacity: 0.85 });
+    selectedLayer = null;
+    hidePanel();
+  }
+
+  function selectLayer(layer) {
+    if (!layer) return;
+    if (selectedLayer === layer) { deselect(); return; }
+    deselect();
+    selectedLayer = layer;
+    var r = layer._routeMeta.region;
+    layer.setStyle({ color: SELECTED_COLORS[r] || '#fff', weight: 4.5, opacity: 1 });
+    showPanel(layer._routeMeta);
+  }
+
+  // Called by route cards to preview a specific track
+  document.addEventListener('route:preview', function (e) {
+    pendingPath = e.detail.path;
+    if (!mapBooted) {
+      mapBooted = true;
+      boot();
+    } else {
+      var layer = layerMap[pendingPath];
+      if (layer) {
+        selectLayer(layer);
+        pendingPath = null;
+      }
+      // else: layer still loading, handled in 'loaded' callback below
+    }
+  });
+
   function initMap(routes) {
     var map = L.map('route-map', { scrollWheelZoom: false });
 
@@ -50,15 +89,6 @@
 
     var loadedCount  = 0;
     var loadedBounds = [];
-    var selectedLayer = null;
-
-    function deselect() {
-      if (!selectedLayer) return;
-      var r = selectedLayer._routeMeta.region;
-      selectedLayer.setStyle({ color: COLORS[r], weight: 2.5, opacity: 0.85 });
-      selectedLayer = null;
-      hidePanel();
-    }
 
     map.on('click', deselect);
 
@@ -87,6 +117,8 @@
       gpxLayer._routeMeta = meta;
 
       gpxLayer.on('loaded', function (e) {
+        layerMap[meta.path] = gpxLayer;
+
         loadedBounds.push(e.target.getBounds());
         loadedCount++;
         if (loadedCount === routes.length) {
@@ -96,19 +128,17 @@
           map.fitBounds(combined, { padding: [40, 40] });
           mapEl.classList.remove('is-loading');
         }
+
+        // Card was clicked before this layer finished loading
+        if (pendingPath === meta.path) {
+          selectLayer(gpxLayer);
+          pendingPath = null;
+        }
       });
 
       gpxLayer.on('click', function (e) {
         L.DomEvent.stopPropagation(e);
-        if (selectedLayer === gpxLayer) {
-          deselect();
-          return;
-        }
-        deselect();
-        selectedLayer = gpxLayer;
-        var r = meta.region;
-        gpxLayer.setStyle({ color: SELECTED_COLORS[r] || '#fff', weight: 4.5, opacity: 1 });
-        showPanel(meta);
+        selectLayer(gpxLayer);
       });
 
       gpxLayer.addTo(map);
@@ -129,11 +159,17 @@
     var observer = new IntersectionObserver(function (entries) {
       if (entries[0].isIntersecting) {
         observer.disconnect();
-        boot();
+        if (!mapBooted) {
+          mapBooted = true;
+          boot();
+        }
       }
     }, { threshold: 0.1 });
     observer.observe(mapEl);
   } else {
-    boot();
+    if (!mapBooted) {
+      mapBooted = true;
+      boot();
+    }
   }
 }());

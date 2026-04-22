@@ -259,7 +259,6 @@ h1 em {
   gap: 1px;
   background: var(--ink);
   border: 1px solid var(--ink);
-  margin-bottom: 4rem;
 }
 
 .route {
@@ -439,6 +438,30 @@ h1         { animation-delay: 0.25s; }
 .route:nth-child(4) { animation-delay: 0.9s; }
 .route:nth-child(5) { animation-delay: 1.0s; }
 .route:nth-child(6) { animation-delay: 1.1s; }
+
+/* Show-all button below routes grid */
+.show-more-btn {
+  display: block;
+  width: 100%;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--ink-soft);
+  background: transparent;
+  border: 1px solid rgba(26,36,28,0.35);
+  border-top: none;
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 4rem;
+}
+
+.show-more-btn:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+  background: var(--paper-deep);
+}
 
 /* Map section */
 .map-wrapper {
