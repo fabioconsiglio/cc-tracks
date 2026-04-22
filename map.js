@@ -10,43 +10,35 @@
     japan:   '#2a6e9e',
   };
 
-  var FILES = [
-    { path: 'routes/allg%C3%A4u/65k-magma.gpx',                           region: 'allgau'  },
-    { path: 'routes/allg%C3%A4u/80k-kisslegg.gpx',                        region: 'allgau'  },
-    { path: 'routes/allg%C3%A4u/80k-radr-ochsenhausen.gpx',               region: 'allgau'  },
-    { path: 'routes/toscana/tl-2025/Toskana_1.gpx',                       region: 'toscana' },
-    { path: 'routes/toscana/tl-2025/Toskana_2.gpx',                       region: 'toscana' },
-    { path: 'routes/toscana/tl-2025/Toskana_3.gpx',                       region: 'toscana' },
-    { path: 'routes/toscana/tl-2025/Toskana_4.gpx',                       region: 'toscana' },
-    { path: 'routes/toscana/tl-2025/Toskana_5.gpx',                       region: 'toscana' },
-    { path: 'routes/toscana/tl-2025/Toskana_6.gpx',                       region: 'toscana' },
-    { path: 'routes/international/japan_2025/Konnichiwa_1.gpx',           region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_2.gpx',           region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_3.gpx',           region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_4.gpx',           region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_5.gpx',           region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_6.gpx',           region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_7_Part_I.gpx',   region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_7_Part_II.gpx',  region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_8.gpx',           region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_9.gpx',           region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_10.gpx',          region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_11.gpx',          region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_12.gpx',          region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_13_Part_I.gpx',  region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_13_Part_II.gpx', region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_14.gpx',          region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_15.gpx',          region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_16.gpx',          region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_17.gpx',          region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_18_Part_I.gpx',  region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_18_Part_II.gpx', region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_19.gpx',          region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_20.gpx',          region: 'japan'   },
-    { path: 'routes/international/japan_2025/Konnichiwa_21.gpx',          region: 'japan'   },
-  ];
+  var SELECTED_COLORS = {
+    allgau:  '#6b8f54',
+    toscana: '#e05e30',
+    japan:   '#3a9ed8',
+  };
 
-  function initMap() {
+  var infoPanel   = document.getElementById('route-info');
+  var infoName    = document.getElementById('route-info-name');
+  var infoRegion  = document.getElementById('route-info-region');
+  var infoDist    = document.getElementById('route-info-distance');
+  var infoEle     = document.getElementById('route-info-elevation');
+  var infoLink    = document.getElementById('route-info-download');
+  var infoClose   = document.getElementById('route-info-close');
+
+  function showPanel(meta) {
+    infoName.textContent   = meta.name;
+    infoRegion.textContent = meta.region_label;
+    infoDist.textContent   = meta.distance_km + ' km';
+    infoEle.textContent    = meta.elevation_gain_m + ' hm';
+    infoLink.href          = meta.path;
+    infoLink.setAttribute('download', '');
+    infoPanel.hidden = false;
+  }
+
+  function hidePanel() {
+    infoPanel.hidden = true;
+  }
+
+  function initMap(routes) {
     var map = L.map('route-map', { scrollWheelZoom: false });
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -56,13 +48,32 @@
 
     map.setView([25, 50], 2);
 
+    var loadedCount  = 0;
     var loadedBounds = [];
+    var selectedLayer = null;
 
-    FILES.forEach(function (file) {
-      new L.GPX(file.path, {
+    function deselect() {
+      if (!selectedLayer) return;
+      var r = selectedLayer._routeMeta.region;
+      selectedLayer.setStyle({ color: COLORS[r], weight: 2.5, opacity: 0.85 });
+      selectedLayer = null;
+      hidePanel();
+    }
+
+    map.on('click', deselect);
+
+    if (infoClose) {
+      infoClose.addEventListener('click', function (e) {
+        e.stopPropagation();
+        deselect();
+      });
+    }
+
+    routes.forEach(function (meta) {
+      var gpxLayer = new L.GPX(meta.path, {
         async: true,
         polyline_options: {
-          color:   COLORS[file.region],
+          color:   COLORS[meta.region] || '#888',
           weight:  2.5,
           opacity: 0.85,
         },
@@ -71,28 +82,58 @@
           endIconUrl:   null,
           shadowUrl:    null,
         },
-      }).on('loaded', function (e) {
+      });
+
+      gpxLayer._routeMeta = meta;
+
+      gpxLayer.on('loaded', function (e) {
         loadedBounds.push(e.target.getBounds());
-        if (loadedBounds.length === FILES.length) {
+        loadedCount++;
+        if (loadedCount === routes.length) {
           var combined = loadedBounds.reduce(function (acc, b) {
             return acc.extend(b);
           });
           map.fitBounds(combined, { padding: [40, 40] });
           mapEl.classList.remove('is-loading');
         }
-      }).addTo(map);
+      });
+
+      gpxLayer.on('click', function (e) {
+        L.DomEvent.stopPropagation(e);
+        if (selectedLayer === gpxLayer) {
+          deselect();
+          return;
+        }
+        deselect();
+        selectedLayer = gpxLayer;
+        var r = meta.region;
+        gpxLayer.setStyle({ color: SELECTED_COLORS[r] || '#fff', weight: 4.5, opacity: 1 });
+        showPanel(meta);
+      });
+
+      gpxLayer.addTo(map);
     });
+  }
+
+  function boot() {
+    fetch('routes.json')
+      .then(function (r) { return r.json(); })
+      .then(function (data) { initMap(data.routes); })
+      .catch(function (err) {
+        console.error('Failed to load routes.json', err);
+        mapEl.classList.remove('is-loading');
+      });
   }
 
   if ('IntersectionObserver' in window) {
     var observer = new IntersectionObserver(function (entries) {
       if (entries[0].isIntersecting) {
         observer.disconnect();
-        initMap();
+        boot();
       }
     }, { threshold: 0.1 });
     observer.observe(mapEl);
   } else {
-    initMap();
+    boot();
   }
 }());

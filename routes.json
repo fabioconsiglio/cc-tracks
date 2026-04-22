@@ -1,0 +1,269 @@
+{
+  "generated": "2026-04-22",
+  "routes": [
+    {
+      "path": "routes/allg%C3%A4u/65k-magma.gpx",
+      "name": "65k Magma",
+      "region": "allgau",
+      "region_label": "Allgäu",
+      "distance_km": 65.6,
+      "elevation_gain_m": 791
+    },
+    {
+      "path": "routes/allg%C3%A4u/80k-kisslegg.gpx",
+      "name": "80k Kisslegg",
+      "region": "allgau",
+      "region_label": "Allgäu",
+      "distance_km": 80.7,
+      "elevation_gain_m": 704
+    },
+    {
+      "path": "routes/allg%C3%A4u/80k-radr-ochsenhausen.gpx",
+      "name": "80k Radr Ochsenhausen",
+      "region": "allgau",
+      "region_label": "Allgäu",
+      "distance_km": 80.7,
+      "elevation_gain_m": 684
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_1.gpx",
+      "name": "Konnichiwa 1",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 44.2,
+      "elevation_gain_m": 556
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_2.gpx",
+      "name": "Konnichiwa 2",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 81.5,
+      "elevation_gain_m": 1399
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_3.gpx",
+      "name": "Konnichiwa 3",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 69.3,
+      "elevation_gain_m": 1739
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_4.gpx",
+      "name": "Konnichiwa 4",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 20.6,
+      "elevation_gain_m": 269
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_5.gpx",
+      "name": "Konnichiwa 5",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 72.0,
+      "elevation_gain_m": 1238
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_6.gpx",
+      "name": "Konnichiwa 6",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 61.3,
+      "elevation_gain_m": 517
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_7_Part_I.gpx",
+      "name": "Konnichiwa 7 Part I",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 26.2,
+      "elevation_gain_m": 266
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_7_Part_II.gpx",
+      "name": "Konnichiwa 7 Part II",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 17.0,
+      "elevation_gain_m": 274
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_8.gpx",
+      "name": "Konnichiwa 8",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 90.3,
+      "elevation_gain_m": 875
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_9.gpx",
+      "name": "Konnichiwa 9",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 71.2,
+      "elevation_gain_m": 718
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_10.gpx",
+      "name": "Konnichiwa 10",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 28.2,
+      "elevation_gain_m": 320
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_11.gpx",
+      "name": "Konnichiwa 11",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 19.9,
+      "elevation_gain_m": 260
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_12.gpx",
+      "name": "Konnichiwa 12",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 80.0,
+      "elevation_gain_m": 1133
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_13_Part_I.gpx",
+      "name": "Konnichiwa 13 Part I",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 19.8,
+      "elevation_gain_m": 300
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_13_Part_II.gpx",
+      "name": "Konnichiwa 13 Part II",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 66.2,
+      "elevation_gain_m": 654
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_14.gpx",
+      "name": "Konnichiwa 14",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 144.4,
+      "elevation_gain_m": 761
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_15.gpx",
+      "name": "Konnichiwa 15",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 51.4,
+      "elevation_gain_m": 1345
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_16.gpx",
+      "name": "Konnichiwa 16",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 74.0,
+      "elevation_gain_m": 1012
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_17.gpx",
+      "name": "Konnichiwa 17",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 36.8,
+      "elevation_gain_m": 949
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_18_Part_I.gpx",
+      "name": "Konnichiwa 18 Part I",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 54.4,
+      "elevation_gain_m": 280
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_18_Part_II.gpx",
+      "name": "Konnichiwa 18 Part II",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 30.9,
+      "elevation_gain_m": 352
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_19.gpx",
+      "name": "Konnichiwa 19",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 80.2,
+      "elevation_gain_m": 600
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_20.gpx",
+      "name": "Konnichiwa 20",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 28.7,
+      "elevation_gain_m": 839
+    },
+    {
+      "path": "routes/international/japan_2025/Konnichiwa_21.gpx",
+      "name": "Konnichiwa 21",
+      "region": "japan",
+      "region_label": "Japan",
+      "distance_km": 83.2,
+      "elevation_gain_m": 829
+    },
+    {
+      "path": "routes/toscana/tl-2025/Toskana_1.gpx",
+      "name": "Toskana 1",
+      "region": "toscana",
+      "region_label": "Toscana",
+      "distance_km": 113.9,
+      "elevation_gain_m": 2529
+    },
+    {
+      "path": "routes/toscana/tl-2025/Toskana_2.gpx",
+      "name": "Toskana 2",
+      "region": "toscana",
+      "region_label": "Toscana",
+      "distance_km": 102.5,
+      "elevation_gain_m": 1861
+    },
+    {
+      "path": "routes/toscana/tl-2025/Toskana_3.gpx",
+      "name": "Toskana 3",
+      "region": "toscana",
+      "region_label": "Toscana",
+      "distance_km": 175.8,
+      "elevation_gain_m": 2888
+    },
+    {
+      "path": "routes/toscana/tl-2025/Toskana_4.gpx",
+      "name": "Toskana 4",
+      "region": "toscana",
+      "region_label": "Toscana",
+      "distance_km": 111.0,
+      "elevation_gain_m": 2107
+    },
+    {
+      "path": "routes/toscana/tl-2025/Toskana_5.gpx",
+      "name": "Toskana 5",
+      "region": "toscana",
+      "region_label": "Toscana",
+      "distance_km": 92.6,
+      "elevation_gain_m": 2073
+    },
+    {
+      "path": "routes/toscana/tl-2025/Toskana_6.gpx",
+      "name": "Toskana 6",
+      "region": "toscana",
+      "region_label": "Toscana",
+      "distance_km": 201.8,
+      "elevation_gain_m": 3782
+    }
+  ]
+}

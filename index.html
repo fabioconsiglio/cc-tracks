@@ -40,7 +40,7 @@
 
   <div id="routes" class="section-head">
     <h2>The Routes</h2>
-    <div class="count">05 routes · Updated April 2026</div>
+    <div class="count"><span id="route-count">Loading…</span></div>
   </div>
 
   <div class="filter-bar">
@@ -57,91 +57,6 @@
 
   <div class="routes">
 
-    <a class="route" data-region="allgau" href="routes/allg%C3%A4u/65k-magma.gpx" download>
-      <div class="route-header">
-        <span class="route-number">No. 01</span>
-        <span class="route-region">Allgäu</span>
-      </div>
-      <h3 class="route-name">65k Magma</h3>
-      <p class="route-desc">A punchy day loop through the Allgäu hills. Rolling terrain on quiet backroads — short enough to push the pace, interesting enough to ride twice.</p>
-      <div class="route-stats">
-        <div class="stat"><span class="stat-label">Distance</span><span class="stat-value">65 km</span></div>
-        <div class="stat"><span class="stat-label">Type</span><span class="stat-value">Day ride</span></div>
-      </div>
-      <div class="route-footer">
-        <span class="surface">Allgäu · Rolling</span>
-        <span class="download">↓ GPX</span>
-      </div>
-    </a>
-
-    <a class="route" data-region="allgau" href="routes/allg%C3%A4u/80k-kisslegg.gpx" download>
-      <div class="route-header">
-        <span class="route-number">No. 02</span>
-        <span class="route-region">Allgäu</span>
-      </div>
-      <h3 class="route-name">80k Kisslegg</h3>
-      <p class="route-desc">An 80-kilometer loop through the gentle Allgäu countryside, passing through Kisslegg and the lakes to the south. Leisurely pace, scenic throughout.</p>
-      <div class="route-stats">
-        <div class="stat"><span class="stat-label">Distance</span><span class="stat-value">80 km</span></div>
-        <div class="stat"><span class="stat-label">Type</span><span class="stat-value">Day ride</span></div>
-      </div>
-      <div class="route-footer">
-        <span class="surface">Allgäu · Flat</span>
-        <span class="download">↓ GPX</span>
-      </div>
-    </a>
-
-    <a class="route" data-region="allgau" href="routes/allg%C3%A4u/80k-radr-ochsenhausen.gpx" download>
-      <div class="route-header">
-        <span class="route-number">No. 03</span>
-        <span class="route-region">Allgäu</span>
-      </div>
-      <h3 class="route-name">80k Ochsenhausen</h3>
-      <p class="route-desc">A longer tour out towards Ochsenhausen along the regional cycling network. Farm roads, forest sections, and a few climbs to keep things honest.</p>
-      <div class="route-stats">
-        <div class="stat"><span class="stat-label">Distance</span><span class="stat-value">80 km</span></div>
-        <div class="stat"><span class="stat-label">Type</span><span class="stat-value">Day ride</span></div>
-      </div>
-      <div class="route-footer">
-        <span class="surface">Allgäu · Mixed</span>
-        <span class="download">↓ GPX</span>
-      </div>
-    </a>
-
-    <a class="route" data-region="toscana" href="routes/toscana/tl-2025/Toskana_1.gpx" download>
-      <div class="route-header">
-        <span class="route-number">No. 04</span>
-        <span class="route-region">Toscana</span>
-      </div>
-      <h3 class="route-name">Toscana 2025</h3>
-      <p class="route-desc">A six-stage bikepacking tour through Tuscany — Chianti hills, cypress-lined ridges, and medieval towns. Each stage links naturally into the next. Download begins at Stage 1.</p>
-      <div class="route-stats">
-        <div class="stat"><span class="stat-label">Stages</span><span class="stat-value">6</span></div>
-        <div class="stat"><span class="stat-label">Type</span><span class="stat-value">Tour</span></div>
-      </div>
-      <div class="route-footer">
-        <span class="surface">Toscana · Gravel</span>
-        <span class="download">↓ Stage 1</span>
-      </div>
-    </a>
-
-    <a class="route" data-region="japan" href="routes/international/japan_2025/Konnichiwa_1.gpx" download>
-      <div class="route-header">
-        <span class="route-number">No. 05</span>
-        <span class="route-region">Japan</span>
-      </div>
-      <h3 class="route-name">Konnichiwa 2025</h3>
-      <p class="route-desc">A 21-stage cycling tour across Japan. Shrines, mountain passes, and coastal roads — some of the most memorable kilometers anywhere. Download begins at Stage 1.</p>
-      <div class="route-stats">
-        <div class="stat"><span class="stat-label">Stages</span><span class="stat-value">21</span></div>
-        <div class="stat"><span class="stat-label">Type</span><span class="stat-value">Tour</span></div>
-      </div>
-      <div class="route-footer">
-        <span class="surface">Japan · Mixed</span>
-        <span class="download">↓ Stage 1</span>
-      </div>
-    </a>
-
     <div class="no-results">No routes match — try a different search or filter.</div>
   </div>
 
@@ -150,7 +65,19 @@
     <div class="count">33 tracks · 3 regions</div>
   </div>
 
-  <div id="route-map" class="route-map is-loading" role="img" aria-label="Map of all cycling routes"></div>
+  <div class="map-wrapper">
+    <div id="route-map" class="route-map is-loading" role="img" aria-label="Map of all cycling routes"></div>
+    <div id="route-info" class="route-info-panel" hidden>
+      <button id="route-info-close" class="route-info-close" aria-label="Close">×</button>
+      <div class="route-info-region" id="route-info-region"></div>
+      <h3 class="route-info-name" id="route-info-name"></h3>
+      <div class="route-info-stats">
+        <div class="stat"><span class="stat-label">Distance</span><span id="route-info-distance" class="stat-value"></span></div>
+        <div class="stat"><span class="stat-label">Elevation</span><span id="route-info-elevation" class="stat-value"></span></div>
+      </div>
+      <a class="route-info-download" id="route-info-download" href="#">↓ Download GPX</a>
+    </div>
+  </div>
 
   <footer id="about">
     <div>© 2026 · Ride in good weather, and in bad.</div>
