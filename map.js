@@ -8,15 +8,14 @@
     allgau:  '#4a5d3a',
     toscana: '#039e1d',
     japan:   '#2a6e9e',
-    norway: '#03609e'
+    norway:  '#03609e'
   };
 
   var SELECTED_COLORS = {
     allgau:  '#77ae4a',
     toscana: '#039e1d',
     japan:   '#2488d0',
-    norway: '#068ce5'
-
+    norway:  '#068ce5'
   };
 
   var infoPanel  = document.getElementById('route-info');
@@ -28,8 +27,8 @@
   var infoClose  = document.getElementById('route-info-close');
 
   var mapBooted     = false;
-  var layerMap      = {};   // path → gpxLayer, populated as each GPX loads
-  var pendingPath   = null; // path requested before layer was ready
+  var layerMap      = {};
+  var pendingPath   = null;
   var selectedLayer = null;
 
   function showPanel(meta) {
@@ -64,19 +63,14 @@
     showPanel(layer._routeMeta);
   }
 
-  // Called by route cards to preview a specific track
   document.addEventListener('route:preview', function (e) {
     pendingPath = e.detail.path;
     if (!mapBooted) {
       mapBooted = true;
       boot();
     } else {
-      var layer = layerMap[pendingPath];
-      if (layer) {
-        selectLayer(layer);
-        pendingPath = null;
-      }
-      // else: layer still loading, handled in 'loaded' callback below
+      selectLayer(layerMap[pendingPath]);
+      pendingPath = null;
     }
   });
 
@@ -88,11 +82,6 @@
       maxZoom: 18,
     }).addTo(map);
 
-    map.setView([25, 50], 2);
-
-    var loadedCount  = 0;
-    var loadedBounds = [];
-
     map.on('click', deselect);
 
     if (infoClose) {
@@ -102,56 +91,51 @@
       });
     }
 
+    var combinedBounds = null;
+
     routes.forEach(function (meta) {
-      var gpxLayer = new L.GPX(meta.path, {
-        async: true,
-        polyline_options: {
-          color:   COLORS[meta.region] || '#888',
-          weight:  2.5,
-          opacity: 0.85,
-        },
-        marker_options: {
-          startIconUrl: null,
-          endIconUrl:   null,
-          shadowUrl:    null,
-        },
+      if (!meta.polyline || meta.polyline.length === 0) return;
+
+      var layer = L.polyline(meta.polyline, {
+        color:   COLORS[meta.region] || '#888',
+        weight:  2.5,
+        opacity: 0.85,
       });
 
-      gpxLayer._routeMeta = meta;
+      layer._routeMeta = meta;
+      layerMap[meta.path] = layer;
 
-      gpxLayer.on('loaded', function (e) {
-        layerMap[meta.path] = gpxLayer;
-
-        loadedBounds.push(e.target.getBounds());
-        loadedCount++;
-        if (loadedCount === routes.length) {
-          var combined = loadedBounds.reduce(function (acc, b) {
-            return acc.extend(b);
-          });
-          map.fitBounds(combined, { padding: [40, 40] });
-          mapEl.classList.remove('is-loading');
-        }
-
-        // Card was clicked before this layer finished loading
-        if (pendingPath === meta.path) {
-          selectLayer(gpxLayer);
-          pendingPath = null;
-        }
-      });
-
-      gpxLayer.on('click', function (e) {
+      layer.on('click', function (e) {
         L.DomEvent.stopPropagation(e);
-        selectLayer(gpxLayer);
+        selectLayer(layer);
       });
 
-      gpxLayer.addTo(map);
+      layer.addTo(map);
+
+      if (meta.bbox) {
+        var b = meta.bbox; // [min_lat, min_lon, max_lat, max_lon]
+        var bounds = L.latLngBounds([b[0], b[1]], [b[2], b[3]]);
+        combinedBounds = combinedBounds ? combinedBounds.extend(bounds) : bounds;
+      }
     });
+
+    if (combinedBounds) {
+      map.fitBounds(combinedBounds, { padding: [40, 40] });
+    } else {
+      map.setView([25, 50], 2);
+    }
+
+    mapEl.classList.remove('is-loading');
+
+    if (pendingPath) {
+      selectLayer(layerMap[pendingPath]);
+      pendingPath = null;
+    }
   }
 
   function boot() {
-    fetch('routes.json')
-      .then(function (r) { return r.json(); })
-      .then(function (data) { initMap(data.routes); })
+    var p = window.routesPromise || fetch('routes.json').then(function (r) { return r.json(); });
+    p.then(function (data) { initMap(data.routes); })
       .catch(function (err) {
         console.error('Failed to load routes.json', err);
         mapEl.classList.remove('is-loading');

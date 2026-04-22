@@ -89,9 +89,8 @@
 
   searchInput.addEventListener('input', apply);
 
-  fetch('routes.json')
-    .then(function (r) { return r.json(); })
-    .then(function (data) {
+  window.routesPromise = fetch('routes.json').then(function (r) { return r.json(); });
+  window.routesPromise.then(function (data) {
       data.routes.forEach(function (route, i) {
         var card = buildCard(route, i);
         routesGrid.insertBefore(card, noResults);

@@ -53,12 +53,30 @@ def haversine(lat1, lon1, lat2, lon2) -> float:
     return R * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
 
+def simplify_pts(pts, target=300):
+    """Step-sample trackpoints down to at most `target` points."""
+    n = len(pts)
+    if n <= target:
+        return [[round(p[0], 5), round(p[1], 5)] for p in pts]
+    step = n / target
+    result = [[round(pts[int(i * step)][0], 5), round(pts[int(i * step)][1], 5)] for i in range(target)]
+    result[-1] = [round(pts[-1][0], 5), round(pts[-1][1], 5)]
+    return result
+
+
+def compute_bbox(pts):
+    """Return [min_lat, min_lon, max_lat, max_lon]."""
+    lats = [p[0] for p in pts]
+    lons = [p[1] for p in pts]
+    return [round(min(lats), 5), round(min(lons), 5), round(max(lats), 5), round(max(lons), 5)]
+
+
 def parse_gpx(path: Path):
     try:
         tree = ET.parse(path)
     except ET.ParseError as e:
         print(f"  WARN: could not parse {path.name}: {e}", file=sys.stderr)
-        return None, 0.0, 0
+        return None, 0.0, 0, []
 
     root = tree.getroot()
 
@@ -84,7 +102,7 @@ def parse_gpx(path: Path):
         pts.append((lat, lon, ele))
 
     if not pts:
-        return gpx_name, 0.0, 0
+        return gpx_name, 0.0, 0, []
 
     dist = sum(haversine(pts[i][0], pts[i][1], pts[i+1][0], pts[i+1][1])
                for i in range(len(pts) - 1))
@@ -96,7 +114,7 @@ def parse_gpx(path: Path):
             if d > 0:
                 gain += d
 
-    return gpx_name, dist, int(gain)
+    return gpx_name, dist, int(gain), pts
 
 
 def url_encode_path(path: Path) -> str:
@@ -129,7 +147,7 @@ def main():
     routes = []
     for gpx_path in gpx_files:
         region_id, region_label = region_from_path(gpx_path)
-        _, dist_m, gain_m = parse_gpx(gpx_path)
+        _, dist_m, gain_m, pts = parse_gpx(gpx_path)
 
         display_name = name_from_filename(gpx_path.stem)
 
@@ -140,9 +158,11 @@ def main():
             "region_label": region_label,
             "distance_km": round(dist_m / 1000, 1),
             "elevation_gain_m": gain_m,
+            "bbox": compute_bbox(pts) if pts else None,
+            "polyline": simplify_pts(pts) if pts else [],
         })
 
-        print(f"  {region_label:10}  {display_name[:40]:40}  {dist_m/1000:.1f} km  {gain_m} hm")
+        print(f"  {region_label:10}  {display_name[:40]:40}  {dist_m/1000:.1f} km  {gain_m} hm  {len(pts)} pts → {min(len(pts), 300)}")
 
     manifest = {
         "generated": date.today().isoformat(),
